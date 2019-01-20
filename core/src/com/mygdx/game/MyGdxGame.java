@@ -24,6 +24,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	int theifstatementfix = 0;
 	int visibullet = 0;
 	int count0bullet = 0;
+	int Gamestate = 0;
 
 	int sizeW;
 	int sizeH;
@@ -34,10 +35,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	int[] barY = new int[3];
 	int barvelocity = 0;
 
-//	collision shit (obstacles not yet added)
+//	collision shit
 
 	Rectangle enemycollision = new Rectangle();
 	Rectangle[] bulletcollision = new Rectangle[20];
+	Rectangle[] barscollision = new Rectangle[3];
 	int[] alreadycollided=new int[20];
 	int score = -18;
 	int highscore = 0;
@@ -87,106 +89,144 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		batch.begin();
-		batch.draw(backie,0,0,sizeW,sizeH);
-		batch.draw(player,(sizeW/2)-(sizeW/6)/2,playerY,sizeW/6,sizeH/12);
-		batch.draw(targetplayer, (sizeW/2)-(sizeW/2)/2,playerY*8,sizeW/2,sizeH/6);
-		enemycollision.set((sizeW/2)-(sizeW/2)/2,playerY*8,sizeW/2,sizeH/6);
+		batch.draw(backie, 0, 0, sizeW, sizeH);
+		batch.draw(player, (sizeW / 2) - (sizeW / 6) / 2, playerY, sizeW / 6, sizeH / 12);
+		batch.draw(targetplayer, (sizeW / 2) - (sizeW / 2) / 2, playerY * 8, sizeW / 2, sizeH / 6);
+		enemycollision.set((sizeW / 2) - (sizeW / 2) / 2, playerY * 8, sizeW / 2, sizeH / 6);
 
+		if (Gamestate == 1){
+			font.draw(batch, "High Score",100, Gdx.graphics.getHeight() - 200);
+			font.draw(batch, String.valueOf(highscore), 100+400, Gdx.graphics.getHeight() - 200);
 
-		for(int i = 0;i<3;i=i+1){
-			batch.draw(bars[i],barY[i],sizeH/2-sizeH/24,sizeW/3,sizeH/12);
-			barY[i] = barY[i]-barvelocity;
-			Gdx.app.log("bar","maid");
-			Gdx.app.log("velocity of bar",Integer.toString(barvelocity));
+			if(Gdx.input.justTouched()){
+				currentbullet=0;
+				theifstatementfix = 0;
+				visibullet = 0;
+				count0bullet = 0;
+				Gamestate = 0;
+				barY[0] = 0;
+				barY[1] = 2*(sizeW/3);
+				barY[2] = barY[1] +2*(sizeW/3);
+				score = 0;
+				barvelocity = 0;
 
-
-		}
-
-
-		if(Gdx.input.justTouched()){
-			Gdx.app.log("executed","ifstatestatus:"+Integer.toString(theifstatementfix));
-			if(theifstatementfix == 0) {
-				if(currentbullet == 0){
-					bulletY[currentbullet] = playerY+sizeH/12;
+				for(int i=0;i<20;i = i+1){
+					bulletY[i]= sizeH+500;
+					alreadycollided[i] = 0;
 				}
-				shootbullets();
-				theifstatementfix = 1;
 			}
-			else if(theifstatementfix != 0){
-				currentbullet++;
-				bulletY[currentbullet] = playerY+sizeH/12;
-				shootbullets();
-
-			}
-
 		}
 
 
 
+		if (Gamestate == 0) {
+			for (int i = 0; i < 3; i = i + 1) {
+				if (barY[i] < -sizeW / 3) {
+					barY[i] = sizeW;
+				}
+				batch.draw(bars[i], barY[i], sizeH / 2 - sizeH / 24, sizeW / 3, sizeH / 12);
+				barscollision[i] = new Rectangle(barY[i], sizeH / 2 - sizeH / 24, sizeW / 3, sizeH / 12);
+				barY[i] = barY[i] - barvelocity;
+				Gdx.app.log("bar", "maid");
 
 
-		if(visibullet == 1){
-
-			if (currentbullet == 0 && count0bullet == 0){
-				count0bullet = 1;
 			}
 
-			if(count0bullet == 1){
-				for (int i=0; i<currentbullet+1;i=i+1){
-					batch.draw(bullet[i],sizeW/2-bullet[i].getWidth(),bulletY[i],sizeW/12,sizeH/28);
-					bulletcollision[i] = new Rectangle(sizeW/2-bullet[i].getWidth(),bulletY[i],sizeW/12,sizeH/28);
-					bulletY[i] += velocity;
+
+			if (Gdx.input.justTouched()) {
+				Gdx.app.log("executed", "ifstatestatus:" + Integer.toString(theifstatementfix));
+				if (theifstatementfix == 0) {
+					if (currentbullet == 0) {
+						bulletY[currentbullet] = playerY + sizeH / 12;
+					}
+					shootbullets();
 					theifstatementfix = 1;
-					count0bullet = 2;
-				}
-			}
-
-			if (count0bullet!=1){
-				for(int i=0; i < 19;i = i+1){
-					batch.draw(bullet[i],sizeW/2-bullet[i].getWidth(),bulletY[i],sizeW/12,sizeH/28);
-					bulletcollision[i] = new Rectangle(sizeW/2-bullet[i].getWidth(),bulletY[i],sizeW/12,sizeH/28);
-
-					bulletY[i] += velocity;
+				} else if (theifstatementfix != 0) {
+					currentbullet++;
+					bulletY[currentbullet] = playerY + sizeH / 12;
+					shootbullets();
 
 				}
-			}
-
 
 			}
 
-		if(count0bullet == 1) {
-			for (int i = 0; i < currentbullet + 1; i = i + 1) {
-				if (bulletcollision[i] != null){
-					if (Intersector.overlaps(enemycollision, bulletcollision[i])) {
-						Gdx.app.log("enemy", "-20 health");
-						bulletY[i]=sizeH+500;
+
+			if (visibullet == 1) {
+
+				if (currentbullet == 0 && count0bullet == 0) {
+					count0bullet = 1;
+				}
+
+				if (count0bullet == 1) {
+					for (int i = 0; i < currentbullet + 1; i = i + 1) {
+						batch.draw(bullet[i], sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
+						bulletcollision[i] = new Rectangle(sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
+						bulletY[i] += velocity;
+						theifstatementfix = 1;
+						count0bullet = 2;
+					}
+				}
+
+				if (count0bullet != 1) {
+					for (int i = 0; i < 19; i = i + 1) {
+						batch.draw(bullet[i], sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
+						bulletcollision[i] = new Rectangle(sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
+
+						bulletY[i] += velocity;
 
 					}
 				}
 
+
 			}
-		}
-		if (count0bullet!=1){
-			for(int i=0; i < 19;i = i+1) {
-				if(bulletcollision[i] != null){
-					if (Intersector.overlaps(enemycollision, bulletcollision[i])) {
-						Gdx.app.log("enemy", "-20 health");
-						score = score+1;
-						bulletY[i]=sizeH+500;
+
+			if (count0bullet == 1) {
+				for (int i = 0; i < currentbullet + 1; i = i + 1) {
+					if (bulletcollision[i] != null) {
+						if (Intersector.overlaps(enemycollision, bulletcollision[i])) {
+							Gdx.app.log("enemy", "-20 health");
+							bulletY[i] = sizeH + 500;
+
+						}
 					}
+
 				}
+			}
+			if (count0bullet != 1) {
+				for (int i = 0; i < 19; i = i + 1) {
+					if (bulletcollision[i] != null) {
+						for (int bar = 0; bar < 3; bar = bar + 1) {
+							Gdx.app.log("col","ek loop daremm");
+							if (Intersector.overlaps( bulletcollision[i],barscollision[bar])) {
+								Gdx.app.log("col","yessss");
+								if(score>highscore){
+									highscore = score;
+								}
+								Gamestate = 1;
+							}
+						}
+
+						if (Intersector.overlaps(enemycollision, bulletcollision[i])) {
+							Gdx.app.log("enemy", "-20 health");
+							score = score + 1;
+							bulletY[i] = sizeH + 500;
+						}
+					}
+
+				}
+			}
+
+			if (score > 0) {
+				font.draw(batch, String.valueOf(score), 100, Gdx.graphics.getHeight() - 200);
+				barvelocity = sizeH / 120;
 
 			}
-		}
 
-		if(score>0){
-			font.draw(batch, String.valueOf(score),100,Gdx.graphics.getHeight()-200);
-			barvelocity = sizeH/80;
+
 
 		}
+
 		batch.end();
-
-
 
 	}
 }
