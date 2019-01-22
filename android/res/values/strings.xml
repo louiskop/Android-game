@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">multi-shooter</string>
+    <string name="title_activity_menu">MenuActivity</string>
 
 </resources>
