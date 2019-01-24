@@ -1,6 +1,7 @@
 package com.mygdx.game.com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,13 +10,18 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.MyGdxGame;
 
+import java.util.Random;
+
 public class GameScreen implements Screen{
+
+
 
     Texture player;
     Texture targetplayer;
     Texture backie;
     Texture[] bullet = new Texture[20];
     Texture[] bars = new Texture[3];
+    Texture gameover;
     int currentbullet=0;
     int theifstatementfix = 0;
     int visibullet = 0;
@@ -30,6 +36,10 @@ public class GameScreen implements Screen{
 
     int[] barY = new int[3];
     int barvelocity = 0;
+    boolean randombarinit = false;
+    Random randomNum = new Random();
+    int barWidth;
+    Preferences prefs = Gdx.app.getPreferences("My Preferences");
 
 //	collision shit
 
@@ -38,7 +48,8 @@ public class GameScreen implements Screen{
     Rectangle[] barscollision = new Rectangle[3];
     int[] alreadycollided=new int[20];
     int score = -18;
-    int highscore = 0;
+    int highscore = prefs.getInteger("highscore", 0);
+
     BitmapFont font;
 
     MyGdxGame game;
@@ -50,9 +61,10 @@ public class GameScreen implements Screen{
 
     @Override
     public void show() {
-        player = new Texture("bird.png");
+        player = new Texture("ferninnn.png");
         targetplayer = new Texture("enemy.png");
-        backie = new Texture("bg.png");
+        backie = new Texture("bluebg.png");
+        gameover = new Texture("gameover.png");
 
         for(int i=0; i<3;i=i+1){
             bars[i] = new Texture("obstacle-bar.png");
@@ -74,6 +86,7 @@ public class GameScreen implements Screen{
         barY[0] = 0;
         barY[1] = 2*(sizeW/3);
         barY[2] = barY[1] +2*(sizeW/3);
+        barWidth = sizeW / 3;
     }
 
     public void shootbullets() {
@@ -88,7 +101,6 @@ public class GameScreen implements Screen{
 
 
 
-
     @Override
     public void render(float delta) {
         game.batch.begin();
@@ -98,8 +110,8 @@ public class GameScreen implements Screen{
         enemycollision.set((sizeW / 2) - (sizeW / 2) / 2, playerY * 8, sizeW / 2, sizeH / 6);
 
         if (Gamestate == 1){
-            font.draw(game.batch, "High Score",sizeH/24, Gdx.graphics.getHeight() - sizeH/12);
-            font.draw(game.batch, String.valueOf(highscore), sizeH/24+sizeH/2, Gdx.graphics.getHeight() - sizeH/12);
+            game.batch.draw(gameover,sizeW/2 - (sizeW/2)/2,sizeH/2-(sizeH/3)/2,sizeW/2,sizeH/3);
+            font.draw(game.batch, String.valueOf(highscore), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/2);
 
             if(Gdx.input.justTouched()){
                 currentbullet=0;
@@ -112,6 +124,8 @@ public class GameScreen implements Screen{
                 barY[2] = barY[1] +2*(sizeW/3);
                 score = 0;
                 barvelocity = 0;
+                barWidth = sizeW / 3;
+                randombarinit = false;
 
                 for(int i=0;i<20;i = i+1){
                     bulletY[i]= sizeH+500;
@@ -126,9 +140,17 @@ public class GameScreen implements Screen{
             for (int i = 0; i < 3; i = i + 1) {
                 if (barY[i] < -sizeW / 3) {
                     barY[i] = sizeW;
+                    if(score>10 && i == 2) {
+                        Gdx.app.log("ok","initialized random init");
+                        randombarinit = true;
+                    }
                 }
-                game.batch.draw(bars[i], barY[i], sizeH / 2 - sizeH / 24, sizeW / 3, sizeH / 12);
-                barscollision[i] = new Rectangle(barY[i], sizeH / 2 - sizeH / 24, sizeW / 3, sizeH / 12);
+                if (randombarinit == true){
+                    barWidth =  sizeW/9+ randomNum.nextInt(sizeW / 3);
+                    randombarinit = false;
+                }
+                game.batch.draw(bars[i], barY[i], sizeH / 2 - sizeH / 24, barWidth, sizeH / 12);
+                barscollision[i] = new Rectangle(barY[i], sizeH / 2 - sizeH / 24, barWidth, sizeH / 12);
                 barY[i] = barY[i] - barvelocity;
                 Gdx.app.log("bar", "maid");
 
@@ -204,6 +226,8 @@ public class GameScreen implements Screen{
                                 Gdx.app.log("col","yessss");
                                 if(score>highscore){
                                     highscore = score;
+                                    prefs.putInteger("highscore",highscore);
+                                    prefs.flush();
                                 }
                                 Gamestate = 1;
                             }
@@ -221,7 +245,19 @@ public class GameScreen implements Screen{
 
             if (score > 0) {
                 font.draw(game.batch, String.valueOf(score), 100, Gdx.graphics.getHeight() - 200);
-                barvelocity = sizeH / 120;
+                if (score<10){
+                    barvelocity = sizeH / 120;
+                }
+                if (score>5&&score<10){
+                    barvelocity = sizeH / 100;
+
+                }
+                if (score>10){
+                    barvelocity = sizeH / 100;
+
+                }
+
+
 
             }
 
