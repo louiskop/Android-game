@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.com.mygdx.game.screens.MannetjieScreen;
 import com.mygdx.game.com.mygdx.game.screens.MenuScreen;
 
 import javax.xml.soap.Text;
@@ -33,6 +34,5 @@ public class MyGdxGame extends Game {
 	@Override
 	public void render () {
 		super.render();
-
 	}
 }

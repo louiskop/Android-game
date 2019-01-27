@@ -3,6 +3,7 @@ package com.mygdx.game.com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,6 +51,10 @@ public class GameScreen implements Screen{
     int score = -18;
     int highscore = prefs.getInteger("highscore", 0);
 
+    Sound collision = Gdx.audio.newSound(Gdx.files.internal("sfx/collision.wav"));
+    Sound hasyboya = Gdx.audio.newSound(Gdx.files.internal("sfx/scoreplus.wav"));
+
+
     BitmapFont font;
 
     MyGdxGame game;
@@ -95,8 +100,9 @@ public class GameScreen implements Screen{
             currentbullet = 0;
         }
         bulletY[currentbullet] = playerY+sizeH/12;
-        velocity = sizeH/80;
+        velocity = sizeH/70;
         visibullet = 1;
+
     }
 
 
@@ -112,8 +118,10 @@ public class GameScreen implements Screen{
         if (Gamestate == 1){
             game.batch.draw(gameover,sizeW/2 - (sizeW/2)/2,sizeH/2-(sizeH/3)/2,sizeW/2,sizeH/3);
             font.draw(game.batch, String.valueOf(highscore), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/2);
+            font.draw(game.batch, String.valueOf(score), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/4);
 
             if(Gdx.input.justTouched()){
+                MenuScreen.tune.play();
                 currentbullet=0;
                 theifstatementfix = 0;
                 visibullet = 0;
@@ -221,10 +229,12 @@ public class GameScreen implements Screen{
                 for (int i = 0; i < 19; i = i + 1) {
                     if (bulletcollision[i] != null) {
                         for (int bar = 0; bar < 3; bar = bar + 1) {
-                            Gdx.app.log("col","ek loop daremm");
                             if (Intersector.overlaps( bulletcollision[i],barscollision[bar])) {
-                                Gdx.app.log("col","yessss");
+                                collision.play(1.0f);
+                                MenuScreen.tune.pause();
                                 if(score>highscore){
+//                                    highscore sound effect
+
                                     highscore = score;
                                     prefs.putInteger("highscore",highscore);
                                     prefs.flush();
@@ -235,6 +245,7 @@ public class GameScreen implements Screen{
 
                         if (Intersector.overlaps(enemycollision, bulletcollision[i])) {
                             Gdx.app.log("enemy", "-20 health");
+                            hasyboya.play(1.0f);
                             score = score + 1;
                             bulletY[i] = sizeH + 500;
                         }
@@ -291,6 +302,7 @@ public class GameScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        collision.dispose();
+        hasyboya.dispose();
     }
 }
