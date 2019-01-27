@@ -49,7 +49,7 @@ public class GameScreen implements Screen{
     Rectangle[] barscollision = new Rectangle[3];
     int[] alreadycollided=new int[20];
     int score = -18;
-    int highscore = prefs.getInteger("highscore", 0);
+    public int highscore = prefs.getInteger("highscore", 0);
 
     Sound collision = Gdx.audio.newSound(Gdx.files.internal("sfx/collision.wav"));
     Sound hasyboya = Gdx.audio.newSound(Gdx.files.internal("sfx/scoreplus.wav"));

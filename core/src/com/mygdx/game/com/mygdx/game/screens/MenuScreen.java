@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.MyGdxGame;
 
 
@@ -22,12 +24,11 @@ public class MenuScreen implements Screen {
 
     Sound select = Gdx.audio.newSound(Gdx.files.internal("sfx/select.wav"));
     static Music tune;
-
+    BitmapFont font;
     public MenuScreen(MyGdxGame game){
         this.game = game;
 
     }
-
 
     @Override
     public void show() {
@@ -35,11 +36,14 @@ public class MenuScreen implements Screen {
         playbut = new Texture("blueplaybut.png");
         custombut = new Texture("bluecustom.png");
         settingsbut = new Texture("bluesettings.png");
-        headinghigh = new Texture("menuopskrif.png");
+        headinghigh = new Texture("jy.png");
         tune = Gdx.audio.newMusic(Gdx.files.internal("backtrack.mp3"));
         tune.setLooping(true);
         tune.setVolume(0.5f);
         tune.play();
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.getData().setScale(SizeH/239);
 
     }
 
@@ -53,7 +57,6 @@ public class MenuScreen implements Screen {
         game.batch.draw(custombut,SizeW-(SizeW/36)-custombut.getWidth()*(SizeW/360),SizeH/100,custombut.getWidth()*(SizeW/360),custombut.getHeight()*(SizeH/598));
         game.batch.draw(settingsbut,SizeW-(SizeW/36)-custombut.getWidth()*(SizeW/360)-SizeW/2,SizeH/100,custombut.getWidth()*(SizeW/360),custombut.getHeight()*(SizeH/598));
         game.batch.draw(headinghigh,SizeW/2-(headinghigh.getWidth()*(SizeW/360))/2,SizeH - SizeH/12,headinghigh.getWidth()*(SizeW/360),headinghigh.getHeight()*(SizeH/598));
-
         if(Gdx.input.justTouched()){
             if (Gdx.input.getX() > (Gdx.graphics.getWidth()/2-(playbut.getWidth()*(SizeW/360))/2)-10 && Gdx.input.getX() < ((Gdx.graphics.getWidth()/2-(playbut.getWidth()*(SizeW/360))/2)+playbut.getWidth()*(SizeW/360))+10&& Gdx.input.getY()>(Gdx.graphics.getHeight()/2-playbut.getHeight()/2)&& Gdx.input.getY()<(Gdx.graphics.getHeight()/2-playbut.getHeight()/2+(playbut.getHeight()*(SizeH/598)))){
                 select.play(1.0f);
