@@ -19,7 +19,12 @@ import com.mygdx.game.com.mygdx.game.screens.MenuScreen;
 import javax.xml.soap.Text;
 
 public class MyGdxGame extends Game {
+	public boolean unMC = true;
+	public boolean unDeon = false;
+	public boolean unBurgs = false;
+	public boolean unZuma = false;
 	public SpriteBatch batch;
+	public String speler = "MC";
 
 
 	@Override

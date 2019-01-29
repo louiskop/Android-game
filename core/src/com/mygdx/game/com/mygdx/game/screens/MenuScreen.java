@@ -22,6 +22,7 @@ public class MenuScreen implements Screen {
     int SizeW = Gdx.graphics.getWidth();
     int SizeH = Gdx.graphics.getHeight();
 
+
     Sound select = Gdx.audio.newSound(Gdx.files.internal("sfx/select.wav"));
     static Music tune;
     BitmapFont font;
@@ -45,12 +46,12 @@ public class MenuScreen implements Screen {
         font.setColor(Color.WHITE);
         font.getData().setScale(SizeH/239);
 
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.app.log("current volume",Float.toString(tune.getVolume()));
-        Gdx.app.log("awewidt",Integer.toString(SizeH));
+//        Gdx.app.log("awewidt",Integer.toString(SizeH));
         game.batch.begin();
         game.batch.draw(menuback,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         game.batch.draw(playbut,Gdx.graphics.getWidth()/2-(playbut.getWidth()*(SizeW/360))/2,Gdx.graphics.getHeight()/2-(playbut.getHeight()*(SizeH/598))/2,playbut.getWidth()*(SizeW/360),playbut.getHeight()*(SizeH/598));
@@ -63,12 +64,15 @@ public class MenuScreen implements Screen {
                 game.setScreen(new GameScreen(game));
 
             }
+            else if(Gdx.input.getX() > SizeW-(SizeW/36)-custombut.getWidth()*(SizeW/360) && Gdx.input.getX() < SizeW-(SizeW/36)-custombut.getWidth()*(SizeW/360)+custombut.getWidth()*(SizeW/360) && Gdx.input.getY()> SizeH/100 && Gdx.input.getY()< (SizeH/100 + (custombut.getHeight()*(SizeH/598)))){
+                select.play(1.0f);
+                game.setScreen(new MannetjieScreen(game));
+            }
 
         }
 
         game.batch.end();
     }
-
     @Override
     public void resize(int width, int height) {
 
