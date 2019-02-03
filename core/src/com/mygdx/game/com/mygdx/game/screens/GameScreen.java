@@ -25,6 +25,7 @@ public class GameScreen implements Screen{
     Texture[] bars = new Texture[3];
     Texture gameover;
     Texture unlockscreen;
+    Texture gowbek;
     int currentbullet=0;
     int theifstatementfix = 0;
     int visibullet = 0;
@@ -76,6 +77,7 @@ public class GameScreen implements Screen{
         backie = new Texture("bluebg.png");
         gameover = new Texture("gameover.png");
         unlockscreen = new Texture("unlocked.png");
+        gowbek = new Texture("backbutchar.png");
 
         for(int i=0; i<3;i=i+1){
             bars[i] = new Texture("obstacle-bar.png");
@@ -125,9 +127,23 @@ public class GameScreen implements Screen{
             game.batch.draw(gameover,sizeW/2 - (sizeW/2)/2,sizeH/2-(sizeH/3)/2,sizeW/2,sizeH/3);
             font.draw(game.batch, String.valueOf(highscore), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/2);
             font.draw(game.batch, String.valueOf(score), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/4);
+            game.batch.draw(gowbek,sizeW/12,sizeH/12,gowbek.getWidth()*(sizeW/360),gowbek.getHeight()*(sizeW/360));
+
+
+
 
             if (showunlocked == true){
-                if (game.unDeon == true&&game.unBurgs!=true){
+                if (game.unMC == true&&game.unDeon!=true){
+                    whatplayer = "MC";
+                    game.batch.draw(unlockscreen,sizeW/2 - (sizeW/2+sizeW/4)/2,sizeH/2-(sizeH/3)/2,sizeW/2+sizeW/4,sizeH/3);
+                    player = new Texture(whatplayer+"/dak.png");
+                    for(int i=0;i<20;i = i+1){
+                        bullet[i]=new Texture(whatplayer+"/bullet.png");
+                        bulletY[i]= sizeH+500;
+                        alreadycollided[i] = 0;
+                    }
+                    game.batch.draw(player,sizeW/2 - (sizeW / 4) / 2,sizeH/2-sizeH /7/2+sizeH/15,sizeW / 4,sizeH / 7);
+                }else if (game.unDeon == true && game.unZuma!=true){
                     whatplayer = "Deon";
                     game.batch.draw(unlockscreen,sizeW/2 - (sizeW/2+sizeW/4)/2,sizeH/2-(sizeH/3)/2,sizeW/2+sizeW/4,sizeH/3);
                     player = new Texture(whatplayer+"/dak.png");
@@ -137,14 +153,39 @@ public class GameScreen implements Screen{
                         alreadycollided[i] = 0;
                     }
                     game.batch.draw(player,sizeW/2 - (sizeW / 4) / 2,sizeH/2-sizeH /7/2+sizeH/15,sizeW / 4,sizeH / 7);
-                }else if (game.unBurgs == true && game.unZuma!=true){
-                    //                    show burgs se unlock screen
+
+                }else if (game.unZuma == true && game.unJan != true){
+                    whatplayer = "Zuma";
+                    game.batch.draw(unlockscreen,sizeW/2 - (sizeW/2+sizeW/4)/2,sizeH/2-(sizeH/3)/2,sizeW/2+sizeW/4,sizeH/3);
+                    player = new Texture(whatplayer+"/dak.png");
+                    for(int i=0;i<20;i = i+1){
+                        bullet[i]=new Texture(whatplayer+"/bullet.png");
+                        bulletY[i]= sizeH+500;
+                        alreadycollided[i] = 0;
+                    }
+                    game.batch.draw(player,sizeW/2 - (sizeW / 4) / 2,sizeH/2-sizeH /7/2+sizeH/15,sizeW / 4,sizeH / 7);
                 }else{
-//                    show zuma se unlock screen
+                    whatplayer = "Jan";
+                    game.batch.draw(unlockscreen,sizeW/2 - (sizeW/2+sizeW/4)/2,sizeH/2-(sizeH/3)/2,sizeW/2+sizeW/4,sizeH/3);
+                    player = new Texture(whatplayer+"/dak.png");
+                    for(int i=0;i<20;i = i+1){
+                        bullet[i]=new Texture(whatplayer+"/bullet.png");
+                        bulletY[i]= sizeH+500;
+                        alreadycollided[i] = 0;
+                    }
+                    game.batch.draw(player,sizeW/2 - (sizeW / 4) / 2,sizeH/2-sizeH /7/2+sizeH/15,sizeW / 4,sizeH / 7);
                 }
             }
 
-            if(Gdx.input.justTouched()){
+
+            if (Gdx.input.getX()>sizeW/12&&Gdx.input.getX()<sizeW/12+gowbek.getWidth()*(sizeW/360)&&Gdx.input.getY()<sizeH-(sizeH/12) && Gdx.input.getY()>sizeH-(sizeH/12+gowbek.getHeight()*(sizeW/360))){
+                game.setScreen(new MenuScreen(game));
+
+            }
+
+
+
+            else if(Gdx.input.justTouched()){
                 MenuScreen.tune.play();
                 currentbullet=0;
                 theifstatementfix = 0;
@@ -262,19 +303,24 @@ public class GameScreen implements Screen{
                                     highscore = score;
                                     prefs.putInteger("highscore",highscore);
                                     prefs.flush();
-                                    if (highscore>5&&highscore<=15){
+                                    if (highscore>5&&highscore<=15&& game.unMC == false){
+                                        game.unMC = true;
+                                        game.unprefs.putBoolean("unMC",true);
+                                        game.unprefs.flush();
+                                        showunlocked = true;
+                                    }else if (highscore>15&&highscore<=20&& game.unDeon == false) {
                                         game.unDeon = true;
-                                        game.unprefs.putBoolean("unDeon",true);
+                                        game.unprefs.putBoolean("unDeon", true);
                                         game.unprefs.flush();
                                         showunlocked = true;
-                                    }else if (highscore>15&&highscore<=20) {
-                                        game.unBurgs = true;
-                                        game.unprefs.putBoolean("unBurgs", true);
-                                        game.unprefs.flush();
-                                        showunlocked = true;
-                                    }else if(highscore>20&&game.unZuma == false){
+                                    }else if(highscore>20&&highscore<=30&& game.unZuma == false){
                                         game.unZuma = true;
                                         game.unprefs.putBoolean("unZuma", true);
+                                        game.unprefs.flush();
+                                        showunlocked = true;
+                                    }else if(highscore>30&&game.unJan == false){
+                                        game.unJan = true;
+                                        game.unprefs.putBoolean("unJan", true);
                                         game.unprefs.flush();
                                         showunlocked = true;
                                     }

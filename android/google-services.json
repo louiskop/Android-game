@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "739374435122",
+    "firebase_url": "https://multi-shooter-cbd07.firebaseio.com",
+    "project_id": "multi-shooter-cbd07",
+    "storage_bucket": "multi-shooter-cbd07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739374435122:android:a29c971dfc44c526",
+        "android_client_info": {
+          "package_name": "com.mygdx.game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "739374435122-fgpr6tbunn9hujfdvoui00c5uqknqh6m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mygdx.game",
+            "certificate_hash": "24bde66ade9a2e99d55c1031c54d00f93e449031"
+          }
+        },
+        {
+          "client_id": "739374435122-ifu9mgbprcsne0phmhdmgslv5dr2r3qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6RV8EFTcgmozkFblVeq6YoaAeuXp3SZs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "739374435122-ifu9mgbprcsne0phmhdmgslv5dr2r3qa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
