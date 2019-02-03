@@ -24,6 +24,7 @@ public class GameScreen implements Screen{
     Texture[] bullet = new Texture[20];
     Texture[] bars = new Texture[3];
     Texture gameover;
+    Texture unlockscreen;
     int currentbullet=0;
     int theifstatementfix = 0;
     int visibullet = 0;
@@ -43,7 +44,9 @@ public class GameScreen implements Screen{
     int barWidth;
     Preferences prefs = Gdx.app.getPreferences("My Preferences");
     int highscore = prefs.getInteger("highscore", 0);
-//	collision shit
+    boolean showunlocked = false;
+
+    //	collision shit
 
     Rectangle enemycollision = new Rectangle();
     Rectangle[] bulletcollision = new Rectangle[20];
@@ -53,6 +56,7 @@ public class GameScreen implements Screen{
 
     Sound collision = Gdx.audio.newSound(Gdx.files.internal("sfx/collision.wav"));
     Sound hasyboya = Gdx.audio.newSound(Gdx.files.internal("sfx/scoreplus.wav"));
+    Sound hanne = Gdx.audio.newSound(Gdx.files.internal("sfx/hanne.wav"));
 
 
     BitmapFont font;
@@ -71,6 +75,7 @@ public class GameScreen implements Screen{
         targetplayer = new Texture("enemy.png");
         backie = new Texture("bluebg.png");
         gameover = new Texture("gameover.png");
+        unlockscreen = new Texture("unlocked.png");
 
         for(int i=0; i<3;i=i+1){
             bars[i] = new Texture("obstacle-bar.png");
@@ -121,6 +126,24 @@ public class GameScreen implements Screen{
             font.draw(game.batch, String.valueOf(highscore), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/2);
             font.draw(game.batch, String.valueOf(score), sizeW/2 - ((sizeW/2)/2)+sizeW/3,(sizeH/2+sizeH/6+sizeH/20)-(sizeH/3)/4);
 
+            if (showunlocked == true){
+                if (game.unDeon == true&&game.unBurgs!=true){
+                    whatplayer = "Deon";
+                    game.batch.draw(unlockscreen,sizeW/2 - (sizeW/2+sizeW/4)/2,sizeH/2-(sizeH/3)/2,sizeW/2+sizeW/4,sizeH/3);
+                    player = new Texture(whatplayer+"/dak.png");
+                    for(int i=0;i<20;i = i+1){
+                        bullet[i]=new Texture(whatplayer+"/bullet.png");
+                        bulletY[i]= sizeH+500;
+                        alreadycollided[i] = 0;
+                    }
+                    game.batch.draw(player,sizeW/2 - (sizeW / 4) / 2,sizeH/2-sizeH /7/2+sizeH/15,sizeW / 4,sizeH / 7);
+                }else if (game.unBurgs == true && game.unZuma!=true){
+                    //                    show burgs se unlock screen
+                }else{
+//                    show zuma se unlock screen
+                }
+            }
+
             if(Gdx.input.justTouched()){
                 MenuScreen.tune.play();
                 currentbullet=0;
@@ -135,6 +158,7 @@ public class GameScreen implements Screen{
                 barvelocity = 0;
                 barWidth = sizeW / 3;
                 randombarinit = false;
+                showunlocked = false;
 
                 for(int i=0;i<20;i = i+1){
                     bulletY[i]= sizeH+500;
@@ -193,8 +217,8 @@ public class GameScreen implements Screen{
 
                 if (count0bullet == 1) {
                     for (int i = 0; i < currentbullet + 1; i = i + 1) {
-                        game.batch.draw(bullet[i], sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
-                        bulletcollision[i] = new Rectangle(sizeW / 2 - bullet[i].getWidth(), bulletY[i], sizeW / 12, sizeH / 28);
+                        game.batch.draw(bullet[i], sizeW / 2 - (sizeW/12)/2, bulletY[i], sizeW / 12, sizeH / 28);
+                        bulletcollision[i] = new Rectangle(sizeW / 2 - (sizeW/12)/2, bulletY[i], sizeW / 12, sizeH / 28);
                         bulletY[i] += velocity;
                         theifstatementfix = 1;
                         count0bullet = 2;
@@ -234,11 +258,26 @@ public class GameScreen implements Screen{
                                 collision.play(1.0f);
                                 MenuScreen.tune.pause();
                                 if(score>highscore){
-//                                    highscore sound effect
-
+                                    hanne.play(1.0f);
                                     highscore = score;
                                     prefs.putInteger("highscore",highscore);
                                     prefs.flush();
+                                    if (highscore>5&&highscore<=15){
+                                        game.unDeon = true;
+                                        game.unprefs.putBoolean("unDeon",true);
+                                        game.unprefs.flush();
+                                        showunlocked = true;
+                                    }else if (highscore>15&&highscore<=20) {
+                                        game.unBurgs = true;
+                                        game.unprefs.putBoolean("unBurgs", true);
+                                        game.unprefs.flush();
+                                        showunlocked = true;
+                                    }else if(highscore>20&&game.unZuma == false){
+                                        game.unZuma = true;
+                                        game.unprefs.putBoolean("unZuma", true);
+                                        game.unprefs.flush();
+                                        showunlocked = true;
+                                    }
                                 }
                                 Gamestate = 1;
                             }

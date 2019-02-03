@@ -19,19 +19,28 @@ import com.mygdx.game.com.mygdx.game.screens.MenuScreen;
 import javax.xml.soap.Text;
 
 public class MyGdxGame extends Game {
-	public boolean unMC = true;
-	public boolean unDeon = false;
-	public boolean unBurgs = false;
-	public boolean unZuma = false;
+
+	public Preferences unprefs;
+	public boolean unMC;
+	public boolean unDeon;
+	public boolean unBurgs;
+	public boolean unZuma;
 	public SpriteBatch batch;
-	public String speler = "MC";
+	public String speler;
+
 
 
 	@Override
 	public void create () {
+		unprefs = Gdx.app.getPreferences("Unlocked Preferences");
+		unMC = unprefs.getBoolean("unMC",true);
+		unDeon = unprefs.getBoolean("unDeon",false);
+		unBurgs = unprefs.getBoolean("unBurgs",false);
+		unZuma = unprefs.getBoolean("unZuma",false);
+		speler = unprefs.getString("speler","MC");
+
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
-
 	}
 
 

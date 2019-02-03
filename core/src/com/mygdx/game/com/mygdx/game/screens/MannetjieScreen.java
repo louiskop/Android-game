@@ -16,6 +16,7 @@ public class MannetjieScreen implements Screen{
     Texture Back;
     Texture gowbek;
     Texture MC;
+    Texture Deon;
     int SizeW = Gdx.graphics.getWidth();
     int SizeH = Gdx.graphics.getHeight();
 
@@ -30,6 +31,7 @@ public class MannetjieScreen implements Screen{
         mannetjieblok = new Texture("mannetjieblokkie.png");
         gowbek = new Texture("backbutchar.png");
         MC = new Texture("MC/dak.png");
+        Deon = new Texture("Deon/dak.png");
     }
 
     @Override
@@ -40,14 +42,26 @@ public class MannetjieScreen implements Screen{
         game.batch.draw(mannetjieblok,SizeW/2-(mannetjieblok.getWidth()*(SizeW/360))/2,SizeH/2-(mannetjieblok.getHeight()*(SizeW/360))/2,mannetjieblok.getWidth()*(SizeW/360),mannetjieblok.getHeight()*(SizeW/360));
         game.batch.draw(gowbek,SizeW/12,SizeH/12,gowbek.getWidth()*(SizeW/360),gowbek.getHeight()*(SizeW/360));
 
+        Gdx.app.log("x",Integer.toString(Gdx.input.getX()));
+        Gdx.app.log("y",Integer.toString(Gdx.input.getY()));
+
         if (game.unMC == true){
             game.batch.draw(MC,SizeW/2-(mannetjieblok.getWidth()*(SizeW/360))/2+SizeW/12,SizeH/2+(mannetjieblok.getHeight()*(SizeW/360))/2-(SizeH / 6),SizeW / 4,SizeH / 7);
-//            game.batch.draw(MC,0,0,SizeW / 4,SizeH / 7);
+
+            if (Gdx.input.getX()>SizeW/2-(mannetjieblok.getWidth()*(SizeW/360))/2+SizeW/12&&Gdx.input.getX()<(SizeW/2-(mannetjieblok.getWidth()*(SizeW/360))/2+SizeW/12)+SizeW / 4&&Gdx.input.getY()>=(SizeH/2+(mannetjieblok.getHeight()*(SizeW/360))/2-(SizeH / 6)-SizeH/2)&&Gdx.input.getY()<=((SizeH/2+(mannetjieblok.getHeight()*(SizeW/360))/2-(SizeH / 6))+SizeH / 7)-SizeH/2){
+                game.speler = "MC";
+                game.unprefs.putString("speler","MC");
+                game.unprefs.flush();
+                game.setScreen(new GameScreen(game));
+            }
+
+        }
+        if (game.unDeon == true){
+            game.batch.draw(Deon,SizeW/2-(mannetjieblok.getWidth()*(SizeW/360))/2+SizeW/4,SizeH/2+(mannetjieblok.getHeight()*(SizeW/360))/2-(SizeH / 6),SizeW / 4,SizeH / 7);
 
         }
 
-//        if mc is touched
-//        set die game.player na hom toe en load game screen, setup prefs in mygdxgame en FLUSH DAI WAARDE
+
 
         game.batch.end();
 
